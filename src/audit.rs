@@ -9,10 +9,10 @@ use std::path::Path;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Operation {
     Init,
-    Set  { key: String },
+    Set  { key: String },    
     Get  { key: String },
-    Delete { key: String },
-    List,
+    Delete { key: String },    
+    List,  
     Rotate,
     Exec { command: String },
 }
@@ -20,7 +20,7 @@ pub enum Operation {
 /// Une entrée dans le journal d'audit
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AuditEntry {
-    pub timestamp:  DateTime<Utc>,
+    pub timestamp:  DateTime<Utc>,     
     pub operation:  Operation,
     pub process_id: u32,
     pub user:       String,
@@ -50,11 +50,11 @@ impl AuditLog {
         if let Ok(json) = serde_json::to_string(&entry) {
             let audit_path = Self::audit_path(vault_path);
             // OpenOptions::append ouvre ou crée, et n'écrase jamais
-            if let Ok(mut f) = OpenOptions::new()
+            if let Ok(mut f) = OpenOptions::new()  
                 .create(true)
                 .append(true)  // <-- Clé : append-only
                 .open(&audit_path)
-            {
+            {   
                 let _ = writeln!(f, "{}", json);
             }
         }
@@ -64,10 +64,10 @@ impl AuditLog {
     #[allow(dead_code)]
     pub fn read(vault_path: &Path) -> Vec<AuditEntry> {
         let audit_path = Self::audit_path(vault_path);
-        let content = std::fs::read_to_string(&audit_path).unwrap_or_default();
+        let content = std::fs::read_to_string(&audit_path).unwrap_or_default();   
         content
             .lines()
             .filter_map(|line| serde_json::from_str(line).ok())
-            .collect()
+            .collect()  
     }
 }
